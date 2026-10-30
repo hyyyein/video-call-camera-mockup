@@ -243,9 +243,38 @@ button { font: inherit; color: inherit; }
 .range-field { display: block; margin-top: 18px; }
 .range-field output { color: #61df7e; font-variant-numeric: tabular-nums; }
 .range-field input { width: 100%; accent-color: #53d776; cursor: pointer; }
+.save-screen {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  border: 0;
+  border-radius: 13px;
+  padding: 12px;
+  background: #55db78;
+  color: #102316;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .16s ease, filter .16s ease;
+}
+.save-screen svg { width: 18px; height: 18px; fill: currentColor; }
+.save-screen:hover { filter: brightness(1.07); transform: translateY(-1px); }
+.save-screen:active { transform: translateY(0) scale(.98); }
+.save-screen:disabled { cursor: wait; filter: grayscale(.45); opacity: .65; transform: none; }
 .reset-editor { width: 100%; border: 1px solid rgba(255,255,255,.14); border-radius: 13px; padding: 11px; background: transparent; font-size: 13px; cursor: pointer; }
 .reset-editor:hover { background: rgba(255,255,255,.07); }
 .editor-help { margin: 10px 0 0; text-align: center; font-size: 10px; color: rgba(255,255,255,.4); }
+
+.capture-video-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
 
 @media (max-width: 1120px) {
   .editor-toggle { display: flex; }

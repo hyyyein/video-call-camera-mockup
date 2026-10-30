@@ -65,6 +65,106 @@ function setEditorOpen(open) {
   editorToggle.setAttribute('aria-expanded', String(open));
 }
 
+function drawVideoFrameForCapture() {
+  const frame = document.createElement('canvas');
+  const width = phone.clientWidth;
+  const height = phone.clientHeight;
+  const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+  frame.width = Math.round(width * pixelRatio);
+  frame.height = Math.round(height * pixelRatio);
+  frame.className = 'capture-video-frame';
+
+  const context = frame.getContext('2d');
+  context.scale(pixelRatio, pixelRatio);
+
+  if (video.videoWidth && video.videoHeight && stream) {
+    const scale = Math.max(width / video.videoWidth, height / video.videoHeight) * 1.03;
+    const drawWidth = video.videoWidth * scale;
+    const drawHeight = video.videoHeight * scale;
+    const x = (width - drawWidth) / 2;
+    const y = (height - drawHeight) / 2;
+
+    context.save();
+    context.translate(width, 0);
+    context.scale(-1, 1);
+    context.filter = getComputedStyle(video).filter || 'none';
+    context.drawImage(video, x, y, drawWidth, drawHeight);
+    context.restore();
+  } else {
+    const gradient = context.createLinearGradient(0, 0, width, height);
+    gradient.addColorStop(0, '#77716d');
+    gradient.addColorStop(1, '#303033');
+    context.fillStyle = gradient;
+    context.fillRect(0, 0, width, height);
+  }
+
+  phone.insertBefore(frame, document.querySelector('.video-shade'));
+  return frame;
+}
+
+function downloadCanvas(canvas) {
+  return new Promise((resolve, reject) => {
+    canvas.toBlob(blob => {
+      if (!blob) {
+        reject(new Error('PNG 변환에 실패했습니다.'));
+        return;
+      }
+
+      const now = new Date();
+      const stamp = [
+        now.getFullYear(),
+        String(now.getMonth() + 1).padStart(2, '0'),
+        String(now.getDate()).padStart(2, '0'),
+        '-',
+        String(now.getHours()).padStart(2, '0'),
+        String(now.getMinutes()).padStart(2, '0'),
+        String(now.getSeconds()).padStart(2, '0')
+      ].join('');
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `video-call-mockup-${stamp}.png`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      resolve();
+    }, 'image/png');
+  });
+}
+
+async function saveScreen() {
+  const button = document.querySelector('#saveScreen');
+  const label = button.querySelector('span');
+  const frame = drawVideoFrameForCapture();
+  const previousVisibility = video.style.visibility;
+
+  button.disabled = true;
+  label.textContent = '저장 중…';
+  video.style.visibility = 'hidden';
+
+  try {
+    if (typeof window.html2canvas !== 'function') throw new Error('화면 저장 도구를 불러오지 못했습니다.');
+    await document.fonts?.ready;
+    const canvas = await window.html2canvas(phone, {
+      backgroundColor: null,
+      scale: Math.min(window.devicePixelRatio || 1, 2),
+      useCORS: true,
+      logging: false
+    });
+    await downloadCanvas(canvas);
+    showToast('PNG 이미지로 저장했어요');
+  } catch (error) {
+    console.error(error);
+    showToast('저장하지 못했어요. 잠시 후 다시 시도해 주세요');
+  } finally {
+    video.style.visibility = previousVisibility;
+    frame.remove();
+    button.disabled = false;
+    label.textContent = '화면 저장하기';
+  }
+}
+
 function updateClock() {
   document.querySelector('#clock').textContent = new Intl.DateTimeFormat('ko-KR', {
     hour: 'numeric', minute: '2-digit', hour12: false
@@ -180,6 +280,7 @@ document.querySelector('#resetEditor').addEventListener('click', () => {
   applyEditorSettings(editorDefaults);
   showToast('기본값으로 되돌렸어요');
 });
+document.querySelector('#saveScreen').addEventListener('click', saveScreen);
 
 window.addEventListener('pagehide', stopCamera);
 applyEditorSettings(readEditorSettings(), false);

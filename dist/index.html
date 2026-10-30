@@ -149,10 +149,15 @@
           </label>
         </div>
 
+        <button id="saveScreen" class="save-screen" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h11l3 3v15H5V3Zm2 2v14h10V7h-3V5H7Zm2 0h3v4H9V5Zm3 7a3 3 0 1 1 0 6 3 3 0 0 1 0-6Z" /></svg>
+          <span>화면 저장하기</span>
+        </button>
         <button id="resetEditor" class="reset-editor" type="button">기본값으로 되돌리기</button>
         <p class="editor-help">변경 내용은 이 브라우저에 자동 저장됩니다.</p>
       </aside>
     </main>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <script src="./app.js"></script>
   </body>
 </html>
