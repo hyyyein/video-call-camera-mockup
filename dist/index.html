@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#101010" />
+    <meta name="description" content="맥북 카메라로 체험하는 영상통화 수신 화면 목업" />
+    <title>영상통화 카메라 목업</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="stage">
+      <section class="phone" aria-label="영상통화 목업">
+        <video id="camera" autoplay muted playsinline aria-label="내 카메라 미리보기"></video>
+        <div class="video-shade"></div>
+
+        <header class="status-bar" aria-hidden="true">
+          <span id="clock">9:41</span>
+          <div class="status-icons">
+            <svg viewBox="0 0 24 16"><path d="M2 12h2v2H2zm4-3h2v5H6zm4-3h2v8h-2zm4-3h2v11h-2z" /></svg>
+            <svg viewBox="0 0 20 16"><path d="M10 14.5 7.7 12.2a3.3 3.3 0 0 1 4.6 0L10 14.5Zm-5-5a7.1 7.1 0 0 1 10 0l-1.8 1.8a4.6 4.6 0 0 0-6.4 0L5 9.5ZM2.2 6.7a11 11 0 0 1 15.6 0L16 8.5a8.5 8.5 0 0 0-12 0L2.2 6.7Z" /></svg>
+            <div class="battery"><span></span></div>
+          </div>
+        </header>
+
+        <div id="cameraPrompt" class="camera-prompt" hidden>
+          <div class="camera-icon">
+            <svg viewBox="0 0 24 24"><path d="M4 6.5h3l1.2-2h7.6l1.2 2h3A2 2 0 0 1 22 8.5v9A2 2 0 0 1 20 19.5H4a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2Zm8 10a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" /></svg>
+          </div>
+          <p id="cameraMessage">카메라를 연결해 주세요</p>
+          <button id="enableCamera" type="button">카메라 켜기</button>
+        </div>
+
+        <section id="incoming" class="screen incoming-screen">
+          <div class="caller">
+            <p class="eyebrow">영상통화</p>
+            <h1>오은영 선생님</h1>
+            <p class="call-status">FaceTime 요청 중…</p>
+          </div>
+
+          <div class="incoming-actions">
+            <div class="secondary-actions">
+              <button class="mini-action" id="remind" type="button">
+                <span class="mini-circle">
+                  <svg viewBox="0 0 24 24"><path d="M12 4a7 7 0 1 1-7 7H2l4-4 4 4H7a5 5 0 1 0 5-5V4Zm-1 3h2v5h4v2h-6V7Z" /></svg>
+                </span>
+                <span>나중에 알림</span>
+              </button>
+              <button class="mini-action" id="message" type="button">
+                <span class="mini-circle">
+                  <svg viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-5 4v-4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z" /></svg>
+                </span>
+                <span>메시지</span>
+              </button>
+            </div>
+
+            <div class="primary-actions">
+              <button class="call-action" id="decline" type="button" aria-label="통화 거절">
+                <span class="call-circle decline">
+                  <svg viewBox="0 0 24 24"><path d="M4.1 13.1c5.2-4.2 10.6-4.2 15.8 0 .7.6.8 1.6.2 2.3l-1.7 1.9c-.5.6-1.4.7-2.1.3l-2.2-1.4c-.5-.3-.8-.9-.7-1.5l.2-1a12 12 0 0 0-3.2 0l.2 1c.1.6-.2 1.2-.7 1.5l-2.2 1.4c-.7.4-1.6.3-2.1-.3l-1.7-1.9c-.6-.7-.5-1.7.2-2.3Z" /></svg>
+                </span>
+                <span>거절</span>
+              </button>
+              <button class="call-action" id="accept" type="button" aria-label="통화 수락">
+                <span class="call-circle accept">
+                  <svg viewBox="0 0 24 24"><path d="M6.6 3.3c.7-.4 1.6-.2 2 .5l1.8 3c.4.7.3 1.5-.3 2.1L8.7 10a14 14 0 0 0 5.3 5.3l1.1-1.4c.5-.6 1.4-.7 2.1-.3l3 1.8c.7.4.9 1.3.5 2l-1.2 2.2c-.4.7-1.1 1.1-1.9 1-7.7-1-13.2-6.5-14.2-14.2-.1-.8.3-1.5 1-1.9l2.2-1.2Z" /></svg>
+                </span>
+                <span>수락</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <section id="activeCall" class="screen active-screen" hidden>
+          <div class="active-top">
+            <p>오은영 선생님</p>
+            <strong id="timer">00:00</strong>
+          </div>
+          <div class="active-controls">
+            <button id="mute" class="control" type="button" aria-pressed="false">
+              <span><svg viewBox="0 0 24 24"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V21H8v2h8v-2h-3v-3.1A7 7 0 0 0 19 11h-2Z" /></svg></span>
+              <small>음소거</small>
+            </button>
+            <button id="blur" class="control" type="button" aria-pressed="false">
+              <span><svg viewBox="0 0 24 24"><path d="M12 2s7 7.1 7 13a7 7 0 0 1-14 0c0-5.9 7-13 7-13Zm0 17a4 4 0 0 0 4-4c0-2.1-2-5.2-4-7.8V19Z" /></svg></span>
+              <small>흐림</small>
+            </button>
+            <button id="hangup" class="control hangup-control" type="button">
+              <span><svg viewBox="0 0 24 24"><path d="M4.1 13.1c5.2-4.2 10.6-4.2 15.8 0 .7.6.8 1.6.2 2.3l-1.7 1.9c-.5.6-1.4.7-2.1.3l-2.2-1.4c-.5-.3-.8-.9-.7-1.5l.2-1a12 12 0 0 0-3.2 0l.2 1c.1.6-.2 1.2-.7 1.5l-2.2 1.4c-.7.4-1.6.3-2.1-.3l-1.7-1.9c-.6-.7-.5-1.7.2-2.3Z" /></svg></span>
+              <small>종료</small>
+            </button>
+          </div>
+        </section>
+
+        <section id="ended" class="screen ended-screen" hidden>
+          <div>
+            <p>영상통화 종료</p>
+            <h2>오은영 선생님</h2>
+            <button id="restart" type="button">다시 받기</button>
+          </div>
+        </section>
+
+        <div id="toast" class="toast" role="status" aria-live="polite"></div>
+        <p class="privacy-note">카메라 영상은 이 브라우저 안에서만 표시됩니다</p>
+      </section>
+    </main>
+    <script src="./app.js"></script>
+  </body>
+</html>
