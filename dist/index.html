@@ -36,9 +36,9 @@
 
         <section id="incoming" class="screen incoming-screen">
           <div class="caller">
-            <p class="eyebrow">영상통화</p>
-            <h1>오은영 선생님</h1>
-            <p class="call-status">FaceTime 요청 중…</p>
+            <p class="eyebrow" data-edit="label">영상통화</p>
+            <h1 data-edit="name">오은영 선생님</h1>
+            <p class="call-status" data-edit="status">FaceTime 요청 중…</p>
           </div>
 
           <div class="incoming-actions">
@@ -76,7 +76,7 @@
 
         <section id="activeCall" class="screen active-screen" hidden>
           <div class="active-top">
-            <p>오은영 선생님</p>
+            <p data-edit="name">오은영 선생님</p>
             <strong id="timer">00:00</strong>
           </div>
           <div class="active-controls">
@@ -98,7 +98,7 @@
         <section id="ended" class="screen ended-screen" hidden>
           <div>
             <p>영상통화 종료</p>
-            <h2>오은영 선생님</h2>
+            <h2 data-edit="name">오은영 선생님</h2>
             <button id="restart" type="button">다시 받기</button>
           </div>
         </section>
@@ -106,6 +106,52 @@
         <div id="toast" class="toast" role="status" aria-live="polite"></div>
         <p class="privacy-note">카메라 영상은 이 브라우저 안에서만 표시됩니다</p>
       </section>
+
+      <button id="editorToggle" class="editor-toggle" type="button" aria-controls="editorPanel" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.4 13a7.8 7.8 0 0 0 .1-1 7.8 7.8 0 0 0-.1-1l2.1-1.7-2-3.4-2.5 1a7.4 7.4 0 0 0-1.7-1L15 3h-4l-.4 2.8a7.4 7.4 0 0 0-1.7 1l-2.5-1-2 3.4L6.6 11a7.8 7.8 0 0 0-.1 1 7.8 7.8 0 0 0 .1 1l-2.1 1.7 2 3.4 2.5-1a7.4 7.4 0 0 0 1.7 1L11 21h4l.4-2.8a7.4 7.4 0 0 0 1.7-1l2.5 1 2-3.4-2.2-1.8ZM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Z" /></svg>
+        <span>화면 편집</span>
+      </button>
+
+      <aside id="editorPanel" class="editor-panel" aria-label="화면 편집 패널">
+        <div class="editor-head">
+          <div>
+            <span class="panel-kicker">CUSTOMIZE</span>
+            <h2>화면 편집</h2>
+          </div>
+          <button id="editorClose" class="editor-close" type="button" aria-label="편집 패널 닫기">×</button>
+        </div>
+
+        <div class="editor-section">
+          <h3>텍스트</h3>
+          <label class="field">
+            <span>이름</span>
+            <input id="nameInput" type="text" value="오은영 선생님" maxlength="24" />
+          </label>
+          <label class="field">
+            <span>위쪽 라벨</span>
+            <input id="labelInput" type="text" value="영상통화" maxlength="20" />
+          </label>
+          <label class="field">
+            <span>상태 문구</span>
+            <input id="statusInput" type="text" value="FaceTime 요청 중…" maxlength="30" />
+          </label>
+        </div>
+
+        <div class="editor-section">
+          <h3>블러 강도</h3>
+          <label class="range-field">
+            <span>수신 화면 <output id="incomingBlurValue">5px</output></span>
+            <input id="incomingBlur" type="range" min="0" max="24" step="1" value="5" />
+          </label>
+          <label class="range-field">
+            <span>통화 중 <output id="activeBlurValue">0px</output></span>
+            <input id="activeBlur" type="range" min="0" max="24" step="1" value="0" />
+          </label>
+        </div>
+
+        <button id="resetEditor" class="reset-editor" type="button">기본값으로 되돌리기</button>
+        <p class="editor-help">변경 내용은 이 브라우저에 자동 저장됩니다.</p>
+      </aside>
     </main>
     <script src="./app.js"></script>
   </body>

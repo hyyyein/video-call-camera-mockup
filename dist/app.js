@@ -7,11 +7,63 @@ const cameraPrompt = document.querySelector('#cameraPrompt');
 const cameraMessage = document.querySelector('#cameraMessage');
 const timer = document.querySelector('#timer');
 const toast = document.querySelector('#toast');
+const stage = document.querySelector('.stage');
+const editorToggle = document.querySelector('#editorToggle');
 
 let stream = null;
 let elapsed = 0;
 let timerId = null;
 let toastId = null;
+
+const editorDefaults = {
+  name: '오은영 선생님',
+  label: '영상통화',
+  status: 'FaceTime 요청 중…',
+  incomingBlur: 5,
+  activeBlur: 0
+};
+
+function readEditorSettings() {
+  try {
+    return { ...editorDefaults, ...JSON.parse(localStorage.getItem('videoCallMockupSettings') || '{}') };
+  } catch {
+    return { ...editorDefaults };
+  }
+}
+
+function applyEditorSettings(settings, save = true) {
+  const safe = { ...editorDefaults, ...settings };
+  document.querySelectorAll('[data-edit="name"]').forEach(el => { el.textContent = safe.name || editorDefaults.name; });
+  document.querySelectorAll('[data-edit="label"]').forEach(el => { el.textContent = safe.label || editorDefaults.label; });
+  document.querySelectorAll('[data-edit="status"]').forEach(el => { el.textContent = safe.status || editorDefaults.status; });
+
+  document.querySelector('#nameInput').value = safe.name;
+  document.querySelector('#labelInput').value = safe.label;
+  document.querySelector('#statusInput').value = safe.status;
+  document.querySelector('#incomingBlur').value = safe.incomingBlur;
+  document.querySelector('#activeBlur').value = safe.activeBlur;
+  document.querySelector('#incomingBlurValue').textContent = `${safe.incomingBlur}px`;
+  document.querySelector('#activeBlurValue').textContent = `${safe.activeBlur}px`;
+  phone.style.setProperty('--incoming-blur', `${safe.incomingBlur}px`);
+  phone.style.setProperty('--active-blur', `${safe.activeBlur}px`);
+
+  if (save) localStorage.setItem('videoCallMockupSettings', JSON.stringify(safe));
+}
+
+function currentEditorSettings() {
+  return {
+    name: document.querySelector('#nameInput').value,
+    label: document.querySelector('#labelInput').value,
+    status: document.querySelector('#statusInput').value,
+    incomingBlur: Number(document.querySelector('#incomingBlur').value),
+    activeBlur: Number(document.querySelector('#activeBlur').value)
+  };
+}
+
+function setEditorOpen(open) {
+  stage.classList.toggle('editor-open', open);
+  editorToggle.setAttribute('aria-expanded', String(open));
+}
 
 function updateClock() {
   document.querySelector('#clock').textContent = new Intl.DateTimeFormat('ko-KR', {
@@ -119,7 +171,18 @@ document.querySelector('#blur').addEventListener('click', (event) => {
   phone.classList.toggle('blur-on', !pressed);
 });
 
+editorToggle.addEventListener('click', () => setEditorOpen(!stage.classList.contains('editor-open')));
+document.querySelector('#editorClose').addEventListener('click', () => setEditorOpen(false));
+document.querySelectorAll('#nameInput, #labelInput, #statusInput, #incomingBlur, #activeBlur').forEach(input => {
+  input.addEventListener('input', () => applyEditorSettings(currentEditorSettings()));
+});
+document.querySelector('#resetEditor').addEventListener('click', () => {
+  applyEditorSettings(editorDefaults);
+  showToast('기본값으로 되돌렸어요');
+});
+
 window.addEventListener('pagehide', stopCamera);
+applyEditorSettings(readEditorSettings(), false);
 updateClock();
 setInterval(updateClock, 30000);
 startCamera();
